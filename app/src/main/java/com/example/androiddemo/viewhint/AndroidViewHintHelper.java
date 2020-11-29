@@ -24,16 +24,16 @@ public class AndroidViewHintHelper {
         this.hintView = new KtvHintView(activity);
     }
 
-    public AndroidViewHintHelper addHintView(@IdRes int viewId, String hintText) {
-        ViewHintInfo hintInfo = new ViewHintInfo(viewId, hintText);
+    public AndroidViewHintHelper addHintView(@IdRes int viewId, String hintText, @ViewHintInfo.HintTextGravity int textGravity) {
+        ViewHintInfo hintInfo = ViewHintInfoFactory.create(textGravity, viewId, hintText);
         View view = activity.findViewById(viewId);
         hintInfo.setHintView(view);
         sparseArray.put(view.hashCode(), hintInfo);
         return this;
     }
 
-    public AndroidViewHintHelper addHintView(@IdRes int viewId, String hintText, int hintMargin, boolean clickEnable, boolean showLightCircle) {
-        ViewHintInfo hintInfo = new ViewHintInfo(viewId, hintText, hintMargin, clickEnable, showLightCircle);
+    public AndroidViewHintHelper addHintView(@IdRes int viewId, String hintText, @ViewHintInfo.HintTextGravity int textGravity, int hintMargin, boolean clickEnable, boolean showLightCircle) {
+        ViewHintInfo hintInfo = ViewHintInfoFactory.create(viewId, hintText, textGravity, hintMargin, clickEnable, showLightCircle);
         View view = activity.findViewById(viewId);
         sparseArray.put(view.hashCode(), hintInfo);
         return this;

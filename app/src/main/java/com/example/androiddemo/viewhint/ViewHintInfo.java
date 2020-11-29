@@ -3,8 +3,12 @@ package com.example.androiddemo.viewhint;
 import android.view.View;
 
 import androidx.annotation.IdRes;
+import androidx.annotation.IntDef;
 
-public class ViewHintInfo {
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+public class ViewHintInfo implements ViewHintSizeInfo {
     private @IdRes int viewId;
     private View hintView;
     private String hintText;
@@ -12,19 +16,49 @@ public class ViewHintInfo {
     private boolean showLightCircle;
     private boolean clickEnable;
 
+    public static final int LEFT = 0;
+    public static final int TOP = 1;
+    public static final int RIGHT = 2;
+    public static final int BOTTOM = 3;
+    public static final int LOWER_RIGHT = 4;
+    public static final int LOWER_LEFT = 5;
+    public static final int UPPER_LEFT = 6;
+    public static final int UPPER_RIGHT = 7;
+    @IntDef({LEFT, TOP, RIGHT, BOTTOM, LOWER_RIGHT, LOWER_LEFT, UPPER_LEFT, UPPER_RIGHT})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface HintTextGravity {}
+    protected @HintTextGravity int textGravity;
+
+
+    @Override
+    public float getTextStartX() {
+        return 0;
+    }
+
+    @Override
+    public float getTextStartY() {
+        return 0;
+    }
+
     private float centerX, centerY, radius;
 
-    public ViewHintInfo(int viewId, String hintText, int hintMargin, boolean clickEnable, boolean showLightCircle) {
+    public ViewHintInfo(int viewId, String hintText, @HintTextGravity int textGravity, int hintMargin, boolean clickEnable, boolean showLightCircle) {
         this.viewId = viewId;
         this.hintText = hintText;
+        this.textGravity = textGravity;
         this.hintMargin = hintMargin;
         this.clickEnable = clickEnable;
         this.showLightCircle = showLightCircle;
     }
 
-    public ViewHintInfo(int viewId, String hintText) {
-        this(viewId, hintText, 15, true, true);
+    public ViewHintInfo(int viewId, String hintText, @HintTextGravity int textGravity) {
+        this(viewId, hintText, ViewHintInfo.BOTTOM, 15, true, true);
     }
+
+    public ViewHintInfo(int viewId) {
+        this(viewId, null, ViewHintInfo.BOTTOM, 15, true, false);
+    }
+
 
     public int getViewId() {
         return viewId;
@@ -96,5 +130,13 @@ public class ViewHintInfo {
 
     public float getRadius() {
         return radius;
+    }
+
+    public int getTextGravity() {
+        return textGravity;
+    }
+
+    public void setTextGravity(int textGravity) {
+        this.textGravity = textGravity;
     }
 }

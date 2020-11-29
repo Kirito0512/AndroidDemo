@@ -14,6 +14,7 @@ import androidx.lifecycle.Lifecycle;
 
 import com.example.androiddemo.presenter.MyPresenter;
 import com.example.androiddemo.viewhint.AndroidViewHintHelper;
+import com.example.androiddemo.viewhint.ViewHintInfo;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
 //                Intent intent = new Intent(MainActivity.this, MaskActivity.class);
 //                startActivity(intent);
                 new AndroidViewHintHelper(MainActivity.this)
-                        .addHintView(R.id.textView3, "点击这里，可以随时下\n麦，放弃演唱当前歌曲")
-                        .addHintView(R.id.textView14, "我是textView 14")
+                        .addHintView(R.id.textView3, "点击这里，可以随时下麦，放弃演唱当前歌曲", ViewHintInfo.BOTTOM)
+                        .addHintView(R.id.textView14, "我是textView 14", ViewHintInfo.TOP)
                         .show();
             }
         });
