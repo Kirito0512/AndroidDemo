@@ -11,12 +11,12 @@ public class LowerRightViewHintInfo extends ViewHintInfo {
     }
 
     @Override
-    public float getTextStartX() {
-        return super.getTextStartX();
+    public float getTextStartX(int singleLineWidth) {
+        return super.getTextStartX(singleLineWidth);
     }
 
     @Override
-    public float getTextStartY() {
-        return super.getTextStartY();
+    public float getTextStartY(float totalLineHeight) {
+        return super.getTextStartY(totalLineHeight);
     }
 }

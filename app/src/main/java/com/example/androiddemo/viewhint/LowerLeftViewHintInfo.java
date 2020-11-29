@@ -1,5 +1,7 @@
 package com.example.androiddemo.viewhint;
 
+import android.graphics.Path;
+
 public class LowerLeftViewHintInfo extends ViewHintInfo {
 
     public LowerLeftViewHintInfo(int viewId, String hintText, int textGravity, int hintMargin, boolean clickEnable, boolean showLightCircle) {
@@ -11,12 +13,17 @@ public class LowerLeftViewHintInfo extends ViewHintInfo {
     }
 
     @Override
-    public float getTextStartX() {
+    public float getTextStartX(int singleLineWidth) {
         return 0;
     }
 
     @Override
-    public float getTextStartY() {
+    public float getTextStartY(float totalLineHeight) {
         return 0;
+    }
+
+    @Override
+    public Path getTrianglePath() {
+        return super.getTrianglePath();
     }
 }

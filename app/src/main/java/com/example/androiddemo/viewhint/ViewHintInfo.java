@@ -1,5 +1,7 @@
 package com.example.androiddemo.viewhint;
 
+import android.graphics.Path;
+import android.graphics.RectF;
 import android.view.View;
 
 import androidx.annotation.IdRes;
@@ -15,6 +17,8 @@ public class ViewHintInfo implements ViewHintSizeInfo {
     private int hintMargin;
     private boolean showLightCircle;
     private boolean clickEnable;
+    private int singleLineWidth;
+    private float totalLineHeight;
 
     public static final int LEFT = 0;
     public static final int TOP = 1;
@@ -31,13 +35,28 @@ public class ViewHintInfo implements ViewHintSizeInfo {
 
 
     @Override
-    public float getTextStartX() {
+    public float getTextStartX(int singleLineWidth) {
         return 0;
     }
 
     @Override
-    public float getTextStartY() {
+    public float getTextStartY(float totalLineHeight) {
         return 0;
+    }
+
+    @Override
+    public Path getTrianglePath() {
+        return null;
+    }
+
+    @Override
+    public RectF getBackgroundRectF(int singleLineWidth, float totalLineHeight) {
+        float left = getTextStartX(singleLineWidth) - KtvHintView.TEXT_BACKGROUND_PADDING;
+        float top = getTextStartY(totalLineHeight) - KtvHintView.TEXT_BACKGROUND_PADDING;
+        float right = left + singleLineWidth + 2 * KtvHintView.TEXT_BACKGROUND_PADDING;
+        float bottom = top + totalLineHeight + 2 * KtvHintView.TEXT_BACKGROUND_PADDING;
+        // 绘制圆角背景颜色
+        return new RectF(left, top, right, bottom);
     }
 
     private float centerX, centerY, radius;
@@ -138,5 +157,23 @@ public class ViewHintInfo implements ViewHintSizeInfo {
 
     public void setTextGravity(int textGravity) {
         this.textGravity = textGravity;
+    }
+
+
+    public void setSingleLineWidth(int singleLineWidth) {
+        this.singleLineWidth = singleLineWidth;
+    }
+
+
+    public void setTotalLineHeight(float totalLineHeight) {
+        this.totalLineHeight = totalLineHeight;
+    }
+
+    public int getSingleLineWidth() {
+        return singleLineWidth;
+    }
+
+    public float getTotalLineHeight() {
+        return totalLineHeight;
     }
 }

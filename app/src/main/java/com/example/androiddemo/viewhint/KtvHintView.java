@@ -16,7 +16,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +28,7 @@ public class KtvHintView extends View {
     private static final String TAG = "KtvHintView_test";
     private static final int DRAW_POINT_COUNT = 60;
     private static final int TEXT_MAX_WIDTH = 500;
-    private static final int TEXT_BACKGROUND_PADDING = 30;
+    public static final int TEXT_BACKGROUND_PADDING = 30;
     public KtvHintView(@NonNull Context context) {
         this(context, null);
     }
@@ -131,31 +130,23 @@ public class KtvHintView extends View {
         Rect bounds = new Rect();
         textPaint.getTextBounds(hintInfo.getHintText(), 0, hintInfo.getHintText().length(), bounds);
         int singleLineWidth = Math.min(bounds.width(), TEXT_MAX_WIDTH);
+        hintInfo.setSingleLineWidth(singleLineWidth);
+        hintInfo.setTotalLineHeight(totalLineHeight);
         // 绘制圆角背景颜色
         drawBackGround(hintInfo, canvas, singleLineWidth, totalLineHeight);
         // 绘制文字
-        canvas.translate(hintInfo.getCenterX() - (singleLineWidth >> 1), hintInfo.getCenterY() + hintInfo.getRadius() + 100);
+        canvas.translate(hintInfo.getTextStartX(singleLineWidth), hintInfo.getTextStartY(totalLineHeight));
         layout.draw(canvas);
         canvas.restore();//别忘了restore
     }
 
     private void drawBackGround(ViewHintInfo hintInfo, Canvas canvas, int singleLineWidth, float totalLineHeight) {
-        float left = hintInfo.getCenterX() - (singleLineWidth >> 1) - TEXT_BACKGROUND_PADDING;
-        float top = hintInfo.getCenterY() + hintInfo.getRadius() + 100 - TEXT_BACKGROUND_PADDING;
-        float right = left + singleLineWidth + 2 * TEXT_BACKGROUND_PADDING;
-        float bottom = top + totalLineHeight + 2 * TEXT_BACKGROUND_PADDING;
-        // 绘制圆角背景颜色
-        RectF rectF = new RectF(left, top, right, bottom);
         mPaint.setColor(Color.parseColor("#FFFF3348"));
         mPaint.setStyle(Paint.Style.FILL);
+        RectF rectF = hintInfo.getBackgroundRectF(singleLineWidth, totalLineHeight);
         canvas.drawRoundRect(rectF, 30, 30, mPaint);
         // 绘制三角形
-        Path path = new Path();
-        path.moveTo(hintInfo.getCenterX() - 40, top);
-        path.lineTo(hintInfo.getCenterX(), top - 40);
-        path.lineTo(hintInfo.getCenterX() + 40, top);
-        path.close();
-        canvas.drawPath(path, mPaint);
+        canvas.drawPath(hintInfo.getTrianglePath(), mPaint);
     }
 
     /**

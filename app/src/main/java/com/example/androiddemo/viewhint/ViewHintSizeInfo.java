@@ -1,7 +1,12 @@
 package com.example.androiddemo.viewhint;
 
+import android.graphics.Path;
+import android.graphics.RectF;
+
 public interface ViewHintSizeInfo {
 
-    public float getTextStartX();
-    public float getTextStartY();
+    public float getTextStartX(int singleLineWidth);
+    public float getTextStartY(float totalLineHeight);
+    public Path getTrianglePath();
+    public RectF getBackgroundRectF(int singleLineWidth, float totalLineHeight);
 }
