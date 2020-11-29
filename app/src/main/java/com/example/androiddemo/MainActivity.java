@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 //                Intent intent = new Intent(MainActivity.this, MaskActivity.class);
 //                startActivity(intent);
                 new AndroidViewHintHelper(MainActivity.this)
-                        .addHintView(R.id.textView3, "我是textview3")
+                        .addHintView(R.id.textView3, "点击这里，可以随时下\n麦，放弃演唱当前歌曲")
                         .addHintView(R.id.textView14, "我是textView 14")
                         .show();
             }

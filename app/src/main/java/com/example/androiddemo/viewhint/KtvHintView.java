@@ -4,9 +4,14 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -22,7 +27,9 @@ public class KtvHintView extends View {
     private SparseArray<ViewHintInfo> sparseArray;
     private Paint mPaint;
     private static final String TAG = "KtvHintView_test";
-    private final int DRAW_POINT_COUNT = 40;
+    private static final int DRAW_POINT_COUNT = 60;
+    private static final int TEXT_MAX_WIDTH = 500;
+    private static final int TEXT_BACKGROUND_PADDING = 30;
     public KtvHintView(@NonNull Context context) {
         this(context, null);
     }
@@ -62,6 +69,9 @@ public class KtvHintView extends View {
             if (hintInfo.isShowLightCircle()) {
                 drawPointCircle(hintInfo, canvas);
             }
+            if (hintInfo.getHintText() != null && hintInfo.getHintText().length() > 0) {
+                drawHintText(hintInfo, canvas);
+            }
         }
     }
 
@@ -78,33 +88,81 @@ public class KtvHintView extends View {
         float radius = Math.max(rectF.right - rectF.left, rectF.bottom - rectF.top) / 2 + hintInfo.getHintMargin();
         float centerCircleX = (rectF.left + rectF.right) / 2;
         float centerCircleY = (rectF.top + rectF.bottom) / 2;
+        hintInfo.setCenterX(centerCircleX);
+        hintInfo.setCenterY(centerCircleY);
+        hintInfo.setRadius(radius);
         canvas.drawCircle(centerCircleX, centerCircleY, radius, mPaint);
-//        if (hintInfo.isShowLightCircle()) {
-//            drawPointCircle(hintInfo, canvas);
-//        }
     }
 
     private void drawPointCircle(ViewHintInfo hintInfo, Canvas canvas) {
         // 绘制镂空区域
-        View view = hintInfo.getHintView();
-        int[] locationArray = new int[2];
-        view.getLocationInWindow(locationArray);
-        RectF rectF = new RectF();
-        rectF.left = locationArray[0];
-        rectF.top = locationArray[1];
-        rectF.right = locationArray[0] + view.getWidth();
-        rectF.bottom = locationArray[1] + view.getHeight();
-        float radius = Math.max(rectF.right - rectF.left, rectF.bottom - rectF.top) / 2 + hintInfo.getHintMargin();
-        float centerCircleX = (rectF.left + rectF.right) / 2;
-        float centerCircleY = (rectF.top + rectF.bottom) / 2;
+        float radius = hintInfo.getRadius();
+        float centerCircleX = hintInfo.getCenterX();
+        float centerCircleY = hintInfo.getCenterY();
 
         int perDegree = 360 / DRAW_POINT_COUNT;
         mPaint.setColor(Color.WHITE);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(5);
         for (int i = 0; i < DRAW_POINT_COUNT; i++) {
-            canvas.drawPoint(centerCircleX, centerCircleY - radius - 2, mPaint);
+            canvas.drawPoint(centerCircleX, centerCircleY - radius, mPaint);
             canvas.rotate(perDegree, centerCircleX, centerCircleY);
         }
+    }
+
+    private void drawHintText(ViewHintInfo hintInfo, Canvas canvas) {
+
+        TextPaint textPaint = new TextPaint();
+        textPaint.setColor(Color.WHITE);
+        textPaint.setStyle(Paint.Style.FILL);
+        textPaint.setAntiAlias(true);
+        textPaint.setStrokeWidth(5);
+        textPaint.setTextSize(48.0F);
+        textPaint.setTextAlign(Paint.Align.LEFT);
+        textPaint.setAntiAlias(true);
+        StaticLayout layout = new StaticLayout(hintInfo.getHintText(), textPaint, TEXT_MAX_WIDTH, Layout.Alignment.ALIGN_NORMAL, 1.0F, 0.0F, true);
+        // 这里的参数300，表示字符串的长度，当满300时，就会换行，也可以使用“\r\n”来实现换行
+        canvas.save();
+
+        int layoutCount = layout.getLineCount();
+        float singleLineHeight = getFontHeight(textPaint);
+        float totalLineHeight = singleLineHeight * layoutCount;
+
+        Rect bounds = new Rect();
+        textPaint.getTextBounds(hintInfo.getHintText(), 0, hintInfo.getHintText().length(), bounds);
+        int singleLineWidth = Math.min(bounds.width(), TEXT_MAX_WIDTH);
+        // 绘制圆角背景颜色
+        drawBackGround(hintInfo, canvas, singleLineWidth, totalLineHeight);
+        // 绘制文字
+        canvas.translate(hintInfo.getCenterX() - (singleLineWidth >> 1), hintInfo.getCenterY() + hintInfo.getRadius() + 100);
+        layout.draw(canvas);
+        canvas.restore();//别忘了restore
+    }
+
+    private void drawBackGround(ViewHintInfo hintInfo, Canvas canvas, int singleLineWidth, float totalLineHeight) {
+        float left = hintInfo.getCenterX() - (singleLineWidth >> 1) - TEXT_BACKGROUND_PADDING;
+        float top = hintInfo.getCenterY() + hintInfo.getRadius() + 100 - TEXT_BACKGROUND_PADDING;
+        float right = left + singleLineWidth + 2 * TEXT_BACKGROUND_PADDING;
+        float bottom = top + totalLineHeight + 2 * TEXT_BACKGROUND_PADDING;
+        // 绘制圆角背景颜色
+        RectF rectF = new RectF(left, top, right, bottom);
+        mPaint.setColor(Color.parseColor("#FFFF3348"));
+        mPaint.setStyle(Paint.Style.FILL);
+        canvas.drawRoundRect(rectF, 30, 30, mPaint);
+        // 绘制三角形
+        Path path = new Path();
+        path.moveTo(hintInfo.getCenterX() - 40, top);
+        path.lineTo(hintInfo.getCenterX(), top - 40);
+        path.lineTo(hintInfo.getCenterX() + 40, top);
+        path.close();
+        canvas.drawPath(path, mPaint);
+    }
+
+    /**
+     *得到文字的高度
+     */
+    private float getFontHeight(TextPaint paint) {
+        Paint.FontMetrics fm = paint.getFontMetrics();// 得到系统默认字体属性
+        return fm.bottom - fm.top;
     }
 }

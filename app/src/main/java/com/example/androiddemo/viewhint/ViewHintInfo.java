@@ -12,6 +12,8 @@ public class ViewHintInfo {
     private boolean showLightCircle;
     private boolean clickEnable;
 
+    private float centerX, centerY, radius;
+
     public ViewHintInfo(int viewId, String hintText, int hintMargin, boolean clickEnable, boolean showLightCircle) {
         this.viewId = viewId;
         this.hintText = hintText;
@@ -70,5 +72,29 @@ public class ViewHintInfo {
 
     public void setClickEnable(boolean clickEnable) {
         this.clickEnable = clickEnable;
+    }
+
+    public void setCenterX(float centerX) {
+        this.centerX = centerX;
+    }
+
+    public void setCenterY(float centerY) {
+        this.centerY = centerY;
+    }
+
+    public void setRadius(float radius) {
+        this.radius = radius;
+    }
+
+    public float getCenterX() {
+        return centerX;
+    }
+
+    public float getCenterY() {
+        return centerY;
+    }
+
+    public float getRadius() {
+        return radius;
     }
 }
