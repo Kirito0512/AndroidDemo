@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ConstraintSet android:id="@+id/start" />
+    <ConstraintSet android:id="@+id/end" />
+    <Transition
+        android:id="@+id/button"
+        constraintSetStart="@+id/start"
+        constraintSetEnd="@+id/end"
+        autoTransition="animateToStart" >
+        <OnClick />
+    </Transition>
+</MotionScene>
