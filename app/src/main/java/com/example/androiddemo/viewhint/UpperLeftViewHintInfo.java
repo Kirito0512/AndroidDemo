@@ -27,9 +27,11 @@ public class UpperLeftViewHintInfo extends ViewHintInfo {
     public Path getTrianglePath() {
         RectF rectF = getBackgroundRectF(getSingleLineWidth(), getTotalLineHeight());
         Path path = new Path();
-        path.moveTo(getCenterX() - 40, rectF.bottom);
-        path.lineTo(getCenterX(), rectF.bottom + 40);
-        path.lineTo(getCenterX() + 40, rectF.bottom);
+        // 防止出现圆角矩形和三角形之间出现不连接的部分
+        float bottom = (float) Math.floor(rectF.bottom);
+        path.moveTo(getCenterX() - 40, bottom);
+        path.lineTo(getCenterX(), bottom + 40);
+        path.lineTo(getCenterX() + 40, bottom);
         path.close();
         return path;
     }
