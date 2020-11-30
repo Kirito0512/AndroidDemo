@@ -1,6 +1,7 @@
 package com.example.androiddemo.viewhint;
 
 import android.graphics.Path;
+import android.graphics.RectF;
 
 public class LowerLeftViewHintInfo extends ViewHintInfo {
 
@@ -14,16 +15,24 @@ public class LowerLeftViewHintInfo extends ViewHintInfo {
 
     @Override
     public float getTextStartX(int singleLineWidth) {
-        return 0;
+        return getCenterX() - singleLineWidth + 50;
     }
 
     @Override
     public float getTextStartY(float totalLineHeight) {
-        return 0;
+        return getCenterY() + getRadius() + 100;
     }
 
     @Override
     public Path getTrianglePath() {
-        return super.getTrianglePath();
+        RectF rectF = getBackgroundRectF(getSingleLineWidth(), getTotalLineHeight());
+        Path path = new Path();
+        // 防止出现圆角矩形和三角形之间出现不连接的部分
+        float top = (float) Math.ceil(rectF.top);
+        path.moveTo(getCenterX() - 40, top);
+        path.lineTo(getCenterX(), top - 40);
+        path.lineTo(getCenterX() + 40, top);
+        path.close();
+        return path;
     }
 }

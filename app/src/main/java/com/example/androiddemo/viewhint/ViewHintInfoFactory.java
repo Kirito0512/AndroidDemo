@@ -14,6 +14,8 @@ public class ViewHintInfoFactory {
                 return new LowerRightViewHintInfo(viewId, hintText, textGravity);
             case ViewHintInfo.UPPER_LEFT:
                 return new UpperLeftViewHintInfo(viewId, hintText, textGravity);
+            case ViewHintInfo.UPPER_RIGHT:
+                return new UpperRightViewHintInfo(viewId, hintText, textGravity);
             case ViewHintInfo.BOTTOM:
             default:
                 return new BottomViewHintInfo(viewId, hintText, textGravity);
