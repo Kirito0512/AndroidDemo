@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Xfermode;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -29,6 +30,7 @@ public class KtvHintView extends View {
     private static final int DRAW_POINT_COUNT = 60;
     private static final int TEXT_MAX_WIDTH = 500;
     public static final int TEXT_BACKGROUND_PADDING = 30;
+    private Xfermode xfermode;
     public KtvHintView(@NonNull Context context) {
         this(context, null);
     }
@@ -41,7 +43,7 @@ public class KtvHintView extends View {
         super(context, attrs, defStyleAttr);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+        xfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
     }
 
     public void setHintInfo(SparseArray<ViewHintInfo> sparseArray) {
@@ -57,6 +59,7 @@ public class KtvHintView extends View {
             return;
         int count = canvas.saveLayer(0, 0, getWidth(), getHeight(), null);
         canvas.drawColor(getResources().getColor(R.color.transparent_50));
+        mPaint.setXfermode(xfermode);
         for (int i = 0; i < sparseArray.size(); i++) {
             ViewHintInfo hintInfo = sparseArray.valueAt(i);
             drawHitView(hintInfo, canvas);
@@ -93,6 +96,7 @@ public class KtvHintView extends View {
         canvas.drawCircle(centerCircleX, centerCircleY, radius, mPaint);
     }
 
+    // 绘制点状的圆环
     private void drawPointCircle(ViewHintInfo hintInfo, Canvas canvas) {
         // 绘制镂空区域
         float radius = hintInfo.getRadius();
