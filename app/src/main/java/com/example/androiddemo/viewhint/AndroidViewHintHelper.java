@@ -16,7 +16,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.example.androiddemo.R;
 
 public class AndroidViewHintHelper {
-    private final KtvHintView hintView;
+    private KtvHintView hintView;
     private SparseArray<ViewHintInfo> sparseArray = new SparseArray<>();
     private FragmentActivity activity;
     private View externalView;
@@ -88,14 +88,22 @@ public class AndroidViewHintHelper {
         if (activity == null)
             return;
         FrameLayout decorView = (FrameLayout) activity.getWindow().getDecorView();
+        View topView = decorView.getChildAt(decorView.getChildCount() - 1);
+        if (topView.getTag() != null && topView.getTag().equals("HintView")) {
+            hintView = null;
+            skipTv = null;
+            return;
+        }
         hintView.setHintInfo(sparseArray);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         hintView.setLayoutParams(layoutParams);
+        hintView.setTag("HintView");
         decorView.addView(hintView);
         if (externalView != null) {
             decorView.addView(externalView);
         }
         if (skipTv != null) {
+            skipTv.setTag("HintView");
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(144, 72);
             lp.gravity = Gravity.BOTTOM | Gravity.START;
             lp.leftMargin = 45;
