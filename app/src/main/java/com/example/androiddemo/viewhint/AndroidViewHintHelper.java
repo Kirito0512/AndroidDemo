@@ -10,13 +10,10 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.IdRes;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.androiddemo.R;
-
-import org.w3c.dom.Text;
 
 public class AndroidViewHintHelper {
     private final KtvHintView hintView;
@@ -35,16 +32,25 @@ public class AndroidViewHintHelper {
     }
 
     public AndroidViewHintHelper addHintView(@IdRes int viewId, String hintText, @ViewHintInfo.HintTextGravity int textGravity) {
-        ViewHintInfo hintInfo = ViewHintInfoFactory.create(textGravity, viewId, hintText);
-        View view = activity.findViewById(viewId);
-        hintInfo.setHintView(view);
-        sparseArray.put(view.hashCode(), hintInfo);
+        return addHintView(viewId, hintText, textGravity, 0, true, false);
+    }
+
+    public AndroidViewHintHelper addHintView(@IdRes int viewId, String hintText, @ViewHintInfo.HintTextGravity int textGravity, int margin) {
+        return addHintView(viewId, hintText, textGravity, margin, true, false);
+    }
+
+    public AndroidViewHintHelper addHintView(ViewHintInfo viewHintInfo) {
+        if (viewHintInfo == null || viewHintInfo.getHintView() == null) {
+            return this;
+        }
+        sparseArray.put(viewHintInfo.getHintView().hashCode(), viewHintInfo);
         return this;
     }
 
     public AndroidViewHintHelper addHintView(@IdRes int viewId, String hintText, @ViewHintInfo.HintTextGravity int textGravity, int hintMargin, boolean clickEnable, boolean showLightCircle) {
         ViewHintInfo hintInfo = ViewHintInfoFactory.create(viewId, hintText, textGravity, hintMargin, clickEnable, showLightCircle);
         View view = activity.findViewById(viewId);
+        hintInfo.setHintView(view);
         sparseArray.put(view.hashCode(), hintInfo);
         return this;
     }

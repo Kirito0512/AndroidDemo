@@ -62,6 +62,8 @@ public class KtvHintView extends View {
         mPaint.setXfermode(xfermode);
         for (int i = 0; i < sparseArray.size(); i++) {
             ViewHintInfo hintInfo = sparseArray.valueAt(i);
+            if (hintInfo.getHintView() == null)
+                return;
             drawHitView(hintInfo, canvas);
         }
         canvas.restoreToCount(count);
@@ -77,8 +79,8 @@ public class KtvHintView extends View {
         }
     }
 
+    // 绘制镂空区域
     private void drawHitView(ViewHintInfo hintInfo, Canvas canvas) {
-        // 绘制镂空区域
         View view = hintInfo.getHintView();
         int[] locationArray = new int[2];
         view.getLocationInWindow(locationArray);
@@ -87,7 +89,8 @@ public class KtvHintView extends View {
         rectF.top = locationArray[1];
         rectF.right = locationArray[0] + view.getWidth();
         rectF.bottom = locationArray[1] + view.getHeight();
-        float radius = Math.max(rectF.right - rectF.left, rectF.bottom - rectF.top) / 2 + hintInfo.getHintMargin();
+        // 根据长宽计算计算半径，再加上设定的半径margin
+        int radius = (int) Math.ceil(Math.sqrt(Math.pow(rectF.right - rectF.left, 2) + Math.pow(rectF.bottom - rectF.top, 2)) / 2) + hintInfo.getHintMargin();
         float centerCircleX = (rectF.left + rectF.right) / 2;
         float centerCircleY = (rectF.top + rectF.bottom) / 2;
         hintInfo.setCenterX(centerCircleX);

@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 new AndroidViewHintHelper(MainActivity.this)
                         .addHintView(R.id.textView3, "点击这里，可以随时下麦，放弃演唱当前歌曲", ViewHintInfo.BOTTOM)
                         .addHintView(R.id.textView14, "我是textView 14", ViewHintInfo.UPPER_LEFT)
+                        .addSkipView()
                         .show();
             }
         });
