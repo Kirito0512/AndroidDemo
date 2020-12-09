@@ -1,21 +1,17 @@
-package com.example.androiddemo.viewhint;
+package com.example.androiddemo.viewhint.HintInfo;
 
 import android.graphics.Path;
 import android.graphics.RectF;
 
-public class LowerRightViewHintInfo extends ViewHintInfo {
+public class LowerLeftViewHintInfo extends ViewHintInfo {
 
-    public LowerRightViewHintInfo(int viewId, String hintText, int textGravity, int hintMargin, boolean clickEnable, boolean showLightCircle) {
-        super(viewId, hintText, textGravity, hintMargin, clickEnable, showLightCircle);
-    }
-
-    public LowerRightViewHintInfo(int viewId, String hintText, int textGravity) {
-        super(viewId, hintText, textGravity);
+    public LowerLeftViewHintInfo(int viewId, String hintText, int textGravity, int hintMargin, boolean clickEnable, boolean showLightCircle, boolean showHintCircle) {
+        super(viewId, hintText, textGravity, hintMargin, clickEnable, showLightCircle, showHintCircle);
     }
 
     @Override
     public float getTextStartX(int singleLineWidth) {
-        return getCenterX() - 50;
+        return getCenterX() - singleLineWidth + 50;
     }
 
     @Override

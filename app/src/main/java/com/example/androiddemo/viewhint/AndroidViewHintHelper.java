@@ -13,7 +13,9 @@ import androidx.annotation.IdRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.androiddemo.AndroidUtils;
 import com.example.androiddemo.R;
+import com.example.androiddemo.viewhint.HintInfo.ViewHintInfo;
 
 public class AndroidViewHintHelper {
     private KtvHintView hintView;
@@ -32,11 +34,15 @@ public class AndroidViewHintHelper {
     }
 
     public AndroidViewHintHelper addHintView(@IdRes int viewId, String hintText, @ViewHintInfo.HintTextGravity int textGravity) {
-        return addHintView(viewId, hintText, textGravity, 0, true, false);
+        return addHintView(viewId, null, hintText, textGravity, 0, true, false, 0);
+    }
+
+    public AndroidViewHintHelper addHintView(@IdRes int viewId, String hintText, @ViewHintInfo.HintTextGravity int textGravity, int margin, boolean clickEnable) {
+        return addHintView(viewId, null, hintText, textGravity, margin, clickEnable, false, 0);
     }
 
     public AndroidViewHintHelper addHintView(@IdRes int viewId, String hintText, @ViewHintInfo.HintTextGravity int textGravity, int margin) {
-        return addHintView(viewId, hintText, textGravity, margin, true, false);
+        return addHintView(viewId, null, hintText, textGravity, margin, false, false, 0);
     }
 
     public AndroidViewHintHelper addHintView(ViewHintInfo viewHintInfo) {
@@ -47,24 +53,35 @@ public class AndroidViewHintHelper {
         return this;
     }
 
-    public AndroidViewHintHelper addHintView(@IdRes int viewId, String hintText, @ViewHintInfo.HintTextGravity int textGravity, int hintMargin, boolean clickEnable, boolean showLightCircle) {
-        ViewHintInfo hintInfo = ViewHintInfoFactory.create(viewId, hintText, textGravity, hintMargin, clickEnable, showLightCircle);
-        View view = activity.findViewById(viewId);
-        hintInfo.setHintView(view);
-        sparseArray.put(view.hashCode(), hintInfo);
+    public AndroidViewHintHelper addHintView(View hintView, String hintText, @ViewHintInfo.HintTextGravity int textGravity, int hintMargin) {
+        if (hintView == null)
+            return this;
+        return addHintView(hintView.getId(), hintView, hintText, textGravity, hintMargin, true, false, 0);
+    }
+
+    public AndroidViewHintHelper addExternalCenterView(View externalView, String hintText, @ViewHintInfo.HintTextGravity int textGravity, boolean showHintCircle, boolean clickEnable) {
+        this.externalView = externalView;
+        ViewHintInfo hintInfo = ViewHintInfoFactory.create(0, hintText, textGravity, 0, clickEnable, false, false);
+        hintInfo.setHintView(externalView);
+        sparseArray.put(externalView.hashCode(), hintInfo);
+        FrameLayout decorView = (FrameLayout) activity.getWindow().getDecorView();
+        decorView.addView(externalView);
         return this;
     }
 
-    public AndroidViewHintHelper addExternalCenterView(View externalView) {
-        this.externalView = externalView;
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.gravity = Gravity.CENTER;
-        this.externalView.setLayoutParams(layoutParams);
+    public AndroidViewHintHelper addHintView(@IdRes int viewId, View hintView, String hintText, @ViewHintInfo.HintTextGravity int textGravity, int hintMargin, boolean clickEnable, boolean showLightCircle, int lightCircleMargin) {
+        ViewHintInfo hintInfo = ViewHintInfoFactory.create(viewId, hintText, textGravity, hintMargin, clickEnable, showLightCircle, true);
+        if (hintView == null) {
+            hintView = activity.findViewById(viewId);
+        }
+        hintInfo.setHintView(hintView);
+        hintInfo.setLightCircleMargin(lightCircleMargin);
+        sparseArray.put(hintView.hashCode(), hintInfo);
         return this;
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    public AndroidViewHintHelper addSkipView() {
+    public AndroidViewHintHelper addSkipView(View.OnClickListener onClickListener) {
         skipTv = new TextView(activity);
         skipTv.setText("跳过");
         skipTv.setTextColor(Color.parseColor("#FF121212"));
@@ -74,13 +91,38 @@ public class AndroidViewHintHelper {
         skipTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (hintView != null && hintView.getParent() != null) {
-                    FrameLayout frameLayout = (FrameLayout) hintView.getParent();
-                    frameLayout.removeView(hintView);
-                    frameLayout.removeView(skipTv);
+//                dismiss();
+                if (onClickListener != null) {
+                    onClickListener.onClick(v);
                 }
             }
         });
+        skipTv.setTag("HintView");
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(AndroidUtils.dpToPixel(48), AndroidUtils.dpToPixel(24));
+        lp.gravity = Gravity.BOTTOM | Gravity.START;
+        lp.leftMargin = AndroidUtils.dpToPixel(15);
+        lp.bottomMargin = AndroidUtils.dpToPixel(15) + AndroidUtils.getDeviceNavigationBarHeight();
+        skipTv.setLayoutParams(lp);
+        return this;
+    }
+
+    public AndroidViewHintHelper clearHint() {
+        sparseArray.clear();
+        FrameLayout decorView = (FrameLayout) activity.getWindow().getDecorView();
+        decorView.removeView(skipTv);
+        return this;
+    }
+
+    public void updateContent() {
+        if (hintView != null && hintView.getParent() != null) {
+            hintView.invalidate();
+        }
+    }
+
+    public AndroidViewHintHelper setHintViewClickListener(View.OnClickListener onClickListener) {
+        if (hintView != null) {
+            hintView.setOnClickListener(onClickListener);
+        }
         return this;
     }
 
@@ -92,24 +134,25 @@ public class AndroidViewHintHelper {
         if (topView.getTag() != null && topView.getTag().equals("HintView")) {
             hintView = null;
             skipTv = null;
+            sparseArray.clear();
             return;
         }
-        hintView.setHintInfo(sparseArray);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        hintView.setLayoutParams(layoutParams);
-        hintView.setTag("HintView");
-        decorView.addView(hintView);
-        if (externalView != null) {
-            decorView.addView(externalView);
-        }
-        if (skipTv != null) {
-            skipTv.setTag("HintView");
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(144, 72);
-            lp.gravity = Gravity.BOTTOM | Gravity.START;
-            lp.leftMargin = 45;
-            lp.bottomMargin = 45;
-            decorView.addView(skipTv, lp);
-        }
+        decorView.post(new Runnable() {
+            @Override
+            public void run() {
+                hintView.setHintInfo(sparseArray);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                hintView.setLayoutParams(layoutParams);
+                hintView.setTag("HintView");
+                decorView.addView(hintView);
+                if (externalView != null) {
+                    decorView.addView(externalView);
+                }
+                if (skipTv != null) {
+                    decorView.addView(skipTv);
+                }
+            }
+        });
     }
 
     public void dismiss() {
@@ -118,5 +161,10 @@ public class AndroidViewHintHelper {
         FrameLayout decorView = (FrameLayout) activity.getWindow().getDecorView();
         decorView.removeView(hintView);
         decorView.removeView(externalView);
+        decorView.removeView(skipTv);
+        hintView = null;
+        skipTv = null;
+        externalView = null;
+        sparseArray.clear();
     }
 }

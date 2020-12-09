@@ -5,9 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,8 +16,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androiddemo.presenter.MyPresenter;
-import com.example.androiddemo.viewhint.AndroidViewHintHelper;
-import com.example.androiddemo.viewhint.ViewHintInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
     }
 
     private List<String> getList() {
-        return Arrays.asList("新手引导遮罩", "添加view", "测试NavigationBar");
+        return Arrays.asList("新手引导遮罩", "添加view", "测试NavigationBar", "进入新手引导");
     }
 
     @Override
@@ -94,6 +90,10 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
                 Log.d(TAG, "csdn navigation bar height = " + AndroidUtils.hasNavigationBar(this));
                 String text = AndroidUtils.hasNavigationBar(this) ? "has bar " + AndroidUtils.getDeviceNavigationBarHeight() : "hide bar";
                 Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+                break;
+            case 3:
+                Intent intent = new Intent(this, GuideActivity.class);
+                startActivity(intent);
                 break;
         }
     }

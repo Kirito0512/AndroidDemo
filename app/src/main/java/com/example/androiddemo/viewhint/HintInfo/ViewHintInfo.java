@@ -1,4 +1,4 @@
-package com.example.androiddemo.viewhint;
+package com.example.androiddemo.viewhint.HintInfo;
 
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -7,11 +7,16 @@ import android.view.View;
 import androidx.annotation.IdRes;
 import androidx.annotation.IntDef;
 
+
+import com.example.androiddemo.viewhint.KtvHintView;
+import com.example.androiddemo.viewhint.ViewHintSizeInfo;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 public class ViewHintInfo implements ViewHintSizeInfo {
-    private @IdRes int viewId;
+    private @IdRes
+    int viewId;
     private View hintView;
     private String hintText;
     private int hintMargin;
@@ -19,6 +24,8 @@ public class ViewHintInfo implements ViewHintSizeInfo {
     private boolean clickEnable;
     private int singleLineWidth;
     private float totalLineHeight;
+    private boolean showHintCircle;
+    private int lightCircleMargin;
 
     public static final int LEFT = 0;
     public static final int TOP = 1;
@@ -30,8 +37,8 @@ public class ViewHintInfo implements ViewHintSizeInfo {
     public static final int UPPER_RIGHT = 7;
     @IntDef({LEFT, TOP, RIGHT, BOTTOM, LOWER_RIGHT, LOWER_LEFT, UPPER_LEFT, UPPER_RIGHT})
     @Retention(RetentionPolicy.SOURCE)
-    @interface HintTextGravity {}
-    protected @HintTextGravity int textGravity;
+    public @interface HintTextGravity {}
+    private @HintTextGravity int textGravity;
 
 
     @Override
@@ -62,12 +69,17 @@ public class ViewHintInfo implements ViewHintSizeInfo {
     private float centerX, centerY, radius;
 
     public ViewHintInfo(int viewId, String hintText, @HintTextGravity int textGravity, int hintMargin, boolean clickEnable, boolean showLightCircle) {
+        this(viewId, hintText, textGravity, hintMargin, clickEnable, showLightCircle, true);
+    }
+
+    public ViewHintInfo(int viewId, String hintText, @HintTextGravity int textGravity, int hintMargin, boolean clickEnable, boolean showLightCircle, boolean showHintCircle) {
         this.viewId = viewId;
         this.hintText = hintText;
         this.textGravity = textGravity;
         this.hintMargin = hintMargin;
         this.clickEnable = clickEnable;
         this.showLightCircle = showLightCircle;
+        this.showHintCircle = showHintCircle;
     }
 
     public ViewHintInfo(int viewId, String hintText, @HintTextGravity int textGravity) {
@@ -175,5 +187,21 @@ public class ViewHintInfo implements ViewHintSizeInfo {
 
     public float getTotalLineHeight() {
         return totalLineHeight;
+    }
+
+    public boolean isShowHintCircle() {
+        return showHintCircle;
+    }
+
+    public void setShowHintCircle(boolean showHintCircle) {
+        this.showHintCircle = showHintCircle;
+    }
+
+    public int getLightCircleMargin() {
+        return lightCircleMargin;
+    }
+
+    public void setLightCircleMargin(int lightCircleMargin) {
+        this.lightCircleMargin = lightCircleMargin;
     }
 }

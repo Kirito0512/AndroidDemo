@@ -10,8 +10,8 @@ import android.view.Display;
 import android.view.WindowManager;
 
 public class AndroidUtils {
-    public static int dpToPixel(Context context, int dipValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
+    public static int dpToPixel(int dipValue) {
+        final float scale = ApplicationUtil.getInstance().getApplication().getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
 
@@ -80,5 +80,8 @@ public class AndroidUtils {
     }
 
 
-
+    public static float sp2px(int dipValue) {
+        final float scale = ApplicationUtil.getInstance().getApplication().getResources().getDisplayMetrics().density;
+        return (int) (dipValue * scale + 0.5f);
+    }
 }

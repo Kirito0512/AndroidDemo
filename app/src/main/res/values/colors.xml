@@ -10,4 +10,5 @@
     <color name="black_FF121212">#FF121212</color>
     <color name="transparent">#00000000</color>
     <color name="transparent_50">#80000000</color>
+    <color name="snatchmic_base_txt_black_alpha_50">#80000000</color>
 </resources>
