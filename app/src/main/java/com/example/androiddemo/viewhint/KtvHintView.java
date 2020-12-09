@@ -44,6 +44,7 @@ public class KtvHintView extends View {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
         xfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     public void setHintInfo(SparseArray<ViewHintInfo> sparseArray) {
@@ -55,8 +56,10 @@ public class KtvHintView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         Log.d(TAG, "onDraw: sparseArray size = " + sparseArray.size());
-        if (sparseArray == null || sparseArray.size() == 0)
+        if (sparseArray == null || sparseArray.size() == 0) {
             return;
+        }
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
         int count = canvas.saveLayer(0, 0, getWidth(), getHeight(), null);
         canvas.drawColor(getResources().getColor(R.color.transparent_50));
         mPaint.setXfermode(xfermode);
