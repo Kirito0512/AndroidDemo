@@ -5,6 +5,7 @@ import com.example.androiddemo.viewhint.HintInfo.LowerLeftViewHintInfo;
 import com.example.androiddemo.viewhint.HintInfo.LowerRightViewHintInfo;
 import com.example.androiddemo.viewhint.HintInfo.TopViewHintInfo;
 import com.example.androiddemo.viewhint.HintInfo.UpperLeftViewHintInfo;
+import com.example.androiddemo.viewhint.HintInfo.UpperRightViewHintInfo;
 import com.example.androiddemo.viewhint.HintInfo.ViewHintInfo;
 
 public class ViewHintInfoFactory {
@@ -21,6 +22,8 @@ public class ViewHintInfoFactory {
                 return new LowerRightViewHintInfo(viewId, hintText, textGravity, hintMargin, clickEnable, showLightCircle, showHintCircle);
             case ViewHintInfo.UPPER_LEFT:
                 return new UpperLeftViewHintInfo(viewId, hintText, textGravity, hintMargin, clickEnable, showLightCircle, showHintCircle);
+            case ViewHintInfo.UPPER_RIGHT:
+                return new UpperRightViewHintInfo(viewId, hintText, textGravity, hintMargin, clickEnable, showLightCircle, showHintCircle);
             case ViewHintInfo.BOTTOM:
             default:
                 return new BottomViewHintInfo(viewId, hintText, textGravity, hintMargin, clickEnable, showLightCircle, showHintCircle);

@@ -23,9 +23,9 @@ public class TopViewHintInfo extends ViewHintInfo {
     public Path getTrianglePath() {
         RectF rectF = getBackgroundRectF(getSingleLineWidth(), getTotalLineHeight());
         Path path = new Path();
-        path.moveTo(getCenterX() - 40, rectF.bottom);
-        path.lineTo(getCenterX(), rectF.bottom + 40);
-        path.lineTo(getCenterX() + 40, rectF.bottom);
+        path.moveTo(getCenterX() - triangleWidth, rectF.bottom);
+        path.lineTo(getCenterX(), rectF.bottom + triangleHeight);
+        path.lineTo(getCenterX() + triangleWidth, rectF.bottom);
         path.close();
         return path;
     }

@@ -25,9 +25,9 @@ public class UpperRightViewHintInfo extends ViewHintInfo {
         Path path = new Path();
         // 防止出现圆角矩形和三角形之间出现不连接的部分
         float bottom = (float) Math.floor(rectF.bottom);
-        path.moveTo(getCenterX() - 40, bottom);
-        path.lineTo(getCenterX(), bottom + 40);
-        path.lineTo(getCenterX() + 40, bottom);
+        path.moveTo(getCenterX() - triangleWidth, bottom);
+        path.lineTo(getCenterX(), bottom + triangleHeight);
+        path.lineTo(getCenterX() + triangleWidth, bottom);
         path.close();
         return path;
     }

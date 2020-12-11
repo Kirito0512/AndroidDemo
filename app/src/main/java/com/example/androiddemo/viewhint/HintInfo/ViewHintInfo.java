@@ -8,6 +8,7 @@ import androidx.annotation.IdRes;
 import androidx.annotation.IntDef;
 
 
+import com.example.androiddemo.AndroidUtils;
 import com.example.androiddemo.viewhint.KtvHintView;
 import com.example.androiddemo.viewhint.ViewHintSizeInfo;
 
@@ -39,7 +40,8 @@ public class ViewHintInfo implements ViewHintSizeInfo {
     @Retention(RetentionPolicy.SOURCE)
     public @interface HintTextGravity {}
     private @HintTextGravity int textGravity;
-
+    protected int triangleWidth = AndroidUtils.dpToPixel(6);
+    protected int triangleHeight = AndroidUtils.dpToPixel(5);
 
     @Override
     public float getTextStartX(int singleLineWidth) {
