@@ -1,8 +1,12 @@
 package com.example.androiddemo;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -15,10 +19,16 @@ import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.androiddemo.gson.TestBaseModel;
+import com.example.androiddemo.gson.TestModel;
 import com.example.androiddemo.presenter.MyPresenter;
+import com.example.androiddemo.service.AidlService;
+import com.example.androiddemo.touch.TestTouchActivity;
+import com.google.gson.Gson;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static android.view.Window.ID_ANDROID_CONTENT;
 
@@ -48,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
     }
 
     private List<String> getList() {
-        return Arrays.asList("新手引导遮罩", "添加view", "测试NavigationBar", "进入新手引导");
+        return Arrays.asList("新手引导遮罩", "添加view", "测试NavigationBar", "aidl", "Gson", "touch事件");
     }
 
     @Override
@@ -61,8 +71,17 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
     public void onClickItem(View view) {
         switch ((int) view.getTag()) {
             case 0:
+                Intent intent = new Intent(this, GuideActivity.class);
+                startActivity(intent);
                 break;
             case 1:
+                AtomicInteger integer = new AtomicInteger(0);
+                for (int i = 0; i < 3; i++) {
+                    if (integer.incrementAndGet() == 0) {
+                        Log.d(TAG, "");
+                    }
+                }
+                Log.d(TAG, "integer = " + integer.get());
                 FrameLayout decorView = (FrameLayout) getWindow().getDecorView();
                 TextView skipTv = new TextView(this);
                 skipTv.setText("跳过");
@@ -92,9 +111,39 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
                 Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
                 break;
             case 3:
-                Intent intent = new Intent(this, GuideActivity.class);
-                startActivity(intent);
+                Intent aidlIntent = new Intent(this, AidlService.class);
+                bindService(aidlIntent, new ServiceConnection() {
+                    @Override
+                    public void onServiceConnected(ComponentName name, IBinder service) {
+                        IRemoteService iRemoteService = IRemoteService.Stub.asInterface(service);
+                        try {
+                            iRemoteService.basicTypes(0, 0, false, 0, 0, "test");
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onServiceDisconnected(ComponentName name) {
+
+                    }
+                }, BIND_AUTO_CREATE);
+                break;
+            case 4:
+                TestBaseModel baseModel = new TestModel("xuqi", "1", "15");
+                Log.d(TAG, " gson msg = " + (new Gson().toJson(baseModel)));
+                break;
+            case 5:
+                TestTouchActivity.showActivity(this);
                 break;
         }
+    }
+
+    private void testString(String test) {
+        Log.d(TAG, "testString: string");
+    }
+
+    private void testString(List<String> test) {
+        Log.d(TAG, "testString: list");
     }
 }
