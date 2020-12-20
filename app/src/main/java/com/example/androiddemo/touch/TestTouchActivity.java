@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.androiddemo.R;
+import com.example.mylibrary.viewhint.AndroidViewHintHelper;
+import com.example.mylibrary.viewhint.HintInfo.ViewHintInfo;
 
 public class TestTouchActivity extends AppCompatActivity {
     private static final String TAG = "xuqi_TestTouchActivity";
@@ -23,6 +25,12 @@ public class TestTouchActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 Log.d(TAG, "onTouch: " + event.getAction() + " rawx = " + event.getRawX() + " rawy = " + event.getRawY());
                 return true;
+            }
+        });
+        tv.post(new Runnable() {
+            @Override
+            public void run() {
+                new AndroidViewHintHelper(TestTouchActivity.this).addHintView(R.id.textView3, "测试", ViewHintInfo.TOP).show();
             }
         });
     }
