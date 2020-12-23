@@ -42,6 +42,10 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
     private int temp = 0;
     private RecyclerView rv;
 
+    static {
+        System.loadLibrary("TestNdk");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
     }
 
     private List<String> getList() {
-        return Arrays.asList("新手引导遮罩", "添加view", "测试NavigationBar", "aidl", "Gson", "touch事件");
+        return Arrays.asList("新手引导遮罩", "添加view", "测试NavigationBar", "aidl", "Gson", "touch事件", "ndk");
     }
 
     @Override
@@ -136,6 +140,9 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
             case 5:
                 TestTouchActivity.showActivity(this);
                 break;
+            case 6:
+                Log.d(TAG, "onClickItem: " + testNdk("hello"));
+                break;
         }
     }
 
@@ -146,4 +153,6 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
     private void testString(List<String> test) {
         Log.d(TAG, "testString: list");
     }
+
+    public native String testNdk(String str);
 }
